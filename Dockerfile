@@ -19,8 +19,14 @@ RUN \
 	apk --purge -v del py-pip && \
 	rm /var/cache/apk/*
 
+
+RUN \
+  echo -e 'http://dl-cdn.alpinelinux.org/alpine/edge/main\nhttp://dl-cdn.alpinelinux.org/alpine/edge/community\nhttp://dl-cdn.alpinelinux.org/alpine/edge/testing' > /etc/apk/repositories \
+  && apk add --no-cache docker
+
+RUN addgroup jenkins docker
 COPY run.sh /run.sh
 RUN chmod 755 /run.sh
 
-USER jenkins
+# USER jenkins
 ENTRYPOINT ["/run.sh"]
