@@ -22,11 +22,16 @@ RUN \
 
 RUN \
   echo -e 'http://dl-cdn.alpinelinux.org/alpine/edge/main\nhttp://dl-cdn.alpinelinux.org/alpine/edge/community\nhttp://dl-cdn.alpinelinux.org/alpine/edge/testing' > /etc/apk/repositories \
-  && apk add --no-cache docker
+  && apk add --no-cache docker 
 
-RUN addgroup jenkins docker
+# Mount the parent docker socket to enable docker builds
+RUN \
+  addgroup jenkins docker && \
+  touch /var/run/docker.sock && \
+  chown -R jenkins:docker /var/run/docker.sock
+
 COPY run.sh /run.sh
 RUN chmod 755 /run.sh
 
-# USER jenkins
+USER jenkins
 ENTRYPOINT ["/run.sh"]
